@@ -27,7 +27,6 @@ class MyNSGA2(NSGA2):
         pass
 
 
-
 mynasga2 = MyNSGA2()
 print(mynasga2.init_pop)
 print(mynasga2.evaluate_population(mynasga2.init_pop))
