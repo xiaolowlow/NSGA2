@@ -1,5 +1,73 @@
 from abc import ABC, abstractmethod
+from collections.abc import Iterable
+from itertools import product
 import numpy as np
+
+def generate_keys(indices):
+    keys_list = []
+    for index in indices:
+        if isinstance(index, int):
+            keys_list.append(range(index))
+        elif isinstance(index, Iterable):
+            keys_list.append(index)
+        else:
+            raise TypeError('Indices must be int or iterable.')
+    
+    keys = keys_list[0] if len(keys_list) == 1 else product(*keys_list)
+    return keys
+
+
+class Model:
+    def __init__(self):
+        self.vars_num = 0
+        self.vars = {}
+
+    def addVars(self, *indices, init=None, lb=0, ub=1, vtype='C', name=...):
+        keys = generate_keys(indices)
+        vars = Vars.fromkeys(keys, init)
+        vars_num = len(vars)
+        vars.slice = slice(self.vars_num, self.vars_num + vars_num)
+        vars.name = name
+        self.vars[name] = vars
+        self.vars_num += vars_num
+        return vars
+    
+    def setObjective(self, objs_func, sense=1):
+        objs_func.sense = sense
+        self.objs = objs_func
+
+    def evaluate(self):
+        return self.objs(**self.vars)
+    
+    def setAlgorithm(self, algorithm):
+        self.algorithm = algorithm
+    
+    def evolve(self):
+
+
+    def __getattr__(self, name):
+        if name in self.vars: return self.vars[name]
+        raise AttributeError(f"'{type(self).__name__}' object has no attribute '{name}'")
+
+
+class Vars(dict):
+    def __init__(self, keys, ):
+        self.slice = ...
+        self.name = ...
+
+
+class Algorithm:
+    def __init__(self, pop_size=10, max_iters=100):
+        self.pop_size = pop_size
+        self.max_iters = max_iters
+        pass
+
+    def eolve(self, vars):
+        
+
+
+        pass
+
 
 class NSGA2(ABC):
     def __init__(self, num_generations=100):
